@@ -21,6 +21,7 @@ jobs:
     strategy:
       matrix:
         swift: 
+        - "3.1"
         - "4.0"
         - "4.1"
         - "4.2"
@@ -55,4 +56,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: swift --version
-      - run: swift test
+      - run: xcodebuild -scheme PromiseKit test
