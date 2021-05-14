@@ -11,21 +11,39 @@ on:
       - README.md
       - .gitignore
 jobs:
-  build:
-    runs-on: ubuntu-18.04
+  auto-cancel:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: technote-space/auto-cancel-redundant-job@v1
+  build-1:
+    needs: auto-cancel
+    runs-on: ubuntu-16.04
     strategy:
       matrix:
         swift: 
         - "4.0"
         - "4.1"
         - "4.2"
+    steps:
+    - uses: fwal/setup-swift@v1
+      with:
+        swift-version: ${{ matrix.swift }}
+    - uses: actions/checkout@v2
+    - run: swift --version
+    - name: Test
+      run: swift build
+  build-2:
+    needs: auto-cancel
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        swift: 
         - "5.0"
         - "5.1"
         - "5.2"
         - "5.3"
         - "5.4"
     steps:
-    - uses: technote-space/auto-cancel-redundant-job@v1
     - uses: fwal/setup-swift@v1
       with:
         swift-version: ${{ matrix.swift }}
