@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: technote-space/auto-cancel-redundant-job@v1
-  build-1:
+  build-ubuntu-16.04:
     needs: auto-cancel
     runs-on: ubuntu-16.04
     strategy:
@@ -28,11 +28,10 @@ jobs:
     - uses: fwal/setup-swift@v1
       with:
         swift-version: ${{ matrix.swift }}
-    - uses: actions/checkout@v2
     - run: swift --version
-    - name: Test
-      run: swift build
-  build-2:
+    - uses: actions/checkout@v2
+    - run: swift build
+  build-ubuntu-18.04:
     needs: auto-cancel
     runs-on: ubuntu-18.04
     strategy:
@@ -47,7 +46,13 @@ jobs:
     - uses: fwal/setup-swift@v1
       with:
         swift-version: ${{ matrix.swift }}
-    - uses: actions/checkout@v2
     - run: swift --version
-    - name: Test
-      run: swift build
+    - uses: actions/checkout@v2
+    - run: swift build
+  test:
+    needs: [build-ubuntu-16.04, build-ubuntu-18.04]
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: swift --version
+      - run: swift test
