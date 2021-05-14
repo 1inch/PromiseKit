@@ -1,0 +1,35 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - README.md
+      - .gitignore
+  pull_request:
+    paths-ignore:
+      - README.md
+      - .gitignore
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        swift: 
+        - "4.0"
+        - "4.1"
+        - "4.2"
+        - "5.0"
+        - "5.1"
+        - "5.2"
+        - "5.3"
+        - "5.4"
+    steps:
+    - uses: technote-space/auto-cancel-redundant-job@v1
+    - uses: fwal/setup-swift@v1
+      with:
+        swift-version: ${{ matrix.swift }}
+    - uses: actions/checkout@v2
+    - run: swift --version
+    - name: Test
+      run: swift build
